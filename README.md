@@ -165,6 +165,9 @@ heart-fuzzy-risk-assessment/
 ├── heart_risk_results.csv       # Output with risk scores
 ├── heart_disease_fuzzy.py       # Main implementation
 ├── requirements.txt             # Dependencies
+├── correlation_matrix.png       # The "statistical relationships" in the data
+├── membership_functions.png     # The fuzzy logic "rules" of the system
+├── risk_analysis_charts.png     # The "results" and patterns from the system
 └── README.md                    # This file
 ```
 
