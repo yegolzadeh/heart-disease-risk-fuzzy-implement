@@ -147,17 +147,6 @@ Patient #87:
 - Recommendations: Continue healthy lifestyle
 ```
 
-## 🔬 Technical Implementation
-
-### Dependencies
-```python
-scikit-fuzzy==0.4.2
-numpy==1.21.6
-pandas==1.3.5
-matplotlib==3.5.0
-seaborn==0.11.2
-```
-
 ### File Structure
 ```
 heart-fuzzy-risk-assessment/
@@ -397,12 +386,6 @@ This fuzzy logic system successfully:
 3. **Interpretable Results**: Provides transparent reasoning process
 4. **Multi-factor Analysis**: Considers complex interactions between parameters
 
-### Limitations
-1. **Rule Dependency**: Performance depends on quality of fuzzy rules
-2. **Parameter Tuning**: Requires careful calibration of membership functions
-3. **Computational Complexity**: Increased with more variables and rules
-4. **Subjectivity**: Some rules may reflect expert bias
-
 ### Validation Approach
 - **Internal Consistency**: Rule base validation through medical experts
 - **Statistical Validation**: Correlation analysis with known risk factors
@@ -433,12 +416,6 @@ Very High Risk (70-100):
 - Aggressive treatment protocols
 ```
 
-### Preventive Insights
-1. **Age Factor**: Strongest correlation with risk (+0.653)
-2. **HDL Importance**: Negative correlation emphasizes protective role
-3. **Blood Pressure Control**: Critical for risk reduction
-4. **Early Detection**: System enables proactive intervention
-
 ## 🔮 Future Enhancements
 
 ### Planned Improvements
@@ -452,14 +429,6 @@ Very High Risk (70-100):
 - Integration with electronic health records
 - Longitudinal risk tracking
 - Treatment outcome prediction
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to:
-1. Report bugs or issues
-2. Suggest new features or improvements
-3. Submit pull requests
-4. Share medical expertise for rule refinement
 
 ## 📚 References
 
