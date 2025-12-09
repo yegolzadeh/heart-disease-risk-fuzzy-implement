@@ -193,8 +193,6 @@ The fuzzy logic system successfully analyzed **300 patient records** and calcula
 | **High** | 50-70 | 65 | 21.7% | 🟠 |
 | **Very High** | 70-100 | 20 | 6.7% | 🔴 |
 
-![Risk Category Distribution](output_plots/risk_categories_pie.png)
-
 ### 📊 Statistical Summary
 
 | Metric | Value |
@@ -221,7 +219,7 @@ The system identified strong relationships between risk factors and calculated r
 
 *Note: Positive correlations indicate higher values increase risk, while negative correlations indicate protective effects.*
 
-![Correlation Matrix](output_plots/correlation_matrix.png)
+![Correlation Matrix](correlation_matrix.png)
 
 ## 🎯 High-Risk Patient Profile
 
@@ -235,22 +233,19 @@ Patients with risk scores above 60 showed distinct characteristics:
 | **LDL** | 149.8 mg/dL | 178.2 mg/dL | +28.4 mg/dL |
 | **HDL** | 55.1 mg/dL | 47.8 mg/dL | -7.3 mg/dL |
 
-## 📊 Visual Analysis
+## 📈 Visual Results
 
-### 1. Membership Functions
-The fuzzy logic system uses carefully calibrated membership functions to categorize input variables:
+### 1. Fuzzy Logic Membership Functions
+![Membership Functions](images/membership_functions.png)
+*Shows how age, blood pressure, and cholesterol values are categorized using fuzzy logic*
 
-![Membership Functions](output_plots/membership_functions.png)
+### 2. Risk Analysis Dashboard  
+![Risk Analysis Dashboard](images/risk_analysis_charts.png)
+*Displays risk score distribution and relationships between variables*
 
-### 2. Risk Analysis Dashboard
-Comprehensive visualization of risk distribution and relationships:
-
-![Risk Analysis Dashboard](output_plots/risk_analysis_dashboard.png)
-
-### 3. Patient Comparisons
-Top 10 highest and lowest risk patients identified:
-
-![Top Patients Comparison](output_plots/top_patients_comparison.png)
+### 3. Correlation Matrix
+![Correlation Matrix](images/correlation_matrix.png)
+*Shows correlations between different medical parameters and risk scores*
 
 ## 🧪 Sample Patient Assessments
 
