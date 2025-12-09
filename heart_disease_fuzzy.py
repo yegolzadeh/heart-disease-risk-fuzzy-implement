@@ -8,7 +8,12 @@ import skfuzzy as fuzz
 import skfuzzy.membership as mf
 import matplotlib.pyplot as plt
 import warnings
+import os
 warnings.filterwarnings('ignore')
+
+# Create directory for saving plots
+if not os.path.exists('plots'):
+    os.makedirs('plots')
 
 # Read data from CSV file
 print("Reading heart data from CSV file...")
@@ -23,17 +28,17 @@ print(data.head())
 # Define fuzzy variables
 x_age = np.arange(0, 101, 1)
 x_bloodPressure = np.arange(0, 221, 1)
-x_cholesterol = np.arange(100, 401, 1)  # Increased range to match data
-x_bloodSugar = np.arange(0, 201, 1)  # Increased range
-x_hdl = np.arange(0, 101, 1)  # Increased range
-x_ldl = np.arange(0, 301, 1)  # Increased range
-y_risk = np.arange(0, 101, 1)  # Increased risk range to 0-100
+x_cholesterol = np.arange(100, 401, 1)
+x_bloodSugar = np.arange(0, 201, 1)
+x_hdl = np.arange(0, 101, 1)
+x_ldl = np.arange(0, 301, 1)
+y_risk = np.arange(0, 101, 1)
 
 print("\n\n" + "="*80)
 print("Fuzzy System for Heart Disease Risk Detection")
 print("="*80)
 
-# Membership functions - with adjusted parameters for better data matching
+# Membership functions
 age_young = mf.trapmf(x_age, [0, 0, 35, 45])
 age_mid = mf.trapmf(x_age, [35, 45, 55, 65])
 age_old = mf.trapmf(x_age, [55, 65, 100, 100])
@@ -48,7 +53,6 @@ cholesterol_mid = mf.trapmf(x_cholesterol, [200, 220, 240, 260])
 cholesterol_high = mf.trapmf(x_cholesterol, [240, 260, 300, 320])
 cholesterol_veryHigh = mf.trapmf(x_cholesterol, [300, 320, 400, 400])
 
-# For fbs (fasting blood sugar) - this is a binary variable (0 or 1)
 x_bloodSugar_fbs = np.arange(0, 2, 1)
 bloodSugar_normal = mf.trimf(x_bloodSugar_fbs, [-0.5, 0, 0.5])
 bloodSugar_high = mf.trimf(x_bloodSugar_fbs, [0.5, 1, 1.5])
@@ -62,13 +66,13 @@ hdl_low = mf.trapmf(x_hdl, [0, 0, 40, 50])
 hdl_mid = mf.trapmf(x_hdl, [40, 50, 60, 70])
 hdl_high = mf.trapmf(x_hdl, [60, 70, 100, 100])
 
-# Risk membership functions
 risk_low = mf.trapmf(y_risk, [0, 0, 25, 35])
 risk_moderate = mf.trapmf(y_risk, [25, 35, 50, 60])
 risk_high = mf.trapmf(y_risk, [50, 60, 75, 85])
 risk_veryHigh = mf.trapmf(y_risk, [75, 85, 100, 100])
 
-# Display membership functions
+# Plot and save membership functions
+print("\nCreating membership functions plot...")
 fig, axes = plt.subplots(3, 3, figsize=(15, 12))
 axes = axes.flatten()
 
@@ -119,11 +123,13 @@ axes[6].plot(y_risk, risk_veryHigh, 'm', linewidth=2, label='Very High')
 axes[6].set_title('Heart Disease Risk Level')
 axes[6].legend()
 
-# Hide extra axes
 axes[7].axis('off')
 axes[8].axis('off')
 
 plt.tight_layout()
+# Save the plot BEFORE showing it
+plt.savefig('plots/membership_functions.png', dpi=300, bbox_inches='tight')
+print("✓ Membership functions plot saved as 'plots/membership_functions.png'")
 plt.show()
 
 # Function to calculate risk for a patient
@@ -157,8 +163,7 @@ def calculate_heart_risk(age, trestbps, chol, fbs, ldl, hdl):
     hdl_fit_mid = fuzz.interp_membership(x_hdl, hdl_mid, hdl)
     hdl_fit_high = fuzz.interp_membership(x_hdl, hdl_high, hdl)
     
-    # Fuzzy rules (simplified)
-    # Rules based on basic medical knowledge
+    # Fuzzy rules
     rule1 = np.fmin(np.fmin(np.fmin(age_fit_young, bp_fit_low), chol_fit_low), risk_low)
     rule2 = np.fmin(np.fmin(np.fmin(age_fit_mid, bp_fit_mid), chol_fit_mid), risk_moderate)
     rule3 = np.fmin(np.fmin(np.fmin(age_fit_old, bp_fit_high), chol_fit_high), risk_high)
@@ -171,22 +176,20 @@ def calculate_heart_risk(age, trestbps, chol, fbs, ldl, hdl):
     rule8 = np.fmin(fbs_fit_high, risk_high)
     rule9 = np.fmin(fbs_fit_normal, risk_moderate)
     
-    # Combine rules (union)
+    # Combine rules
     out_low = np.fmax(rule1, rule7)
     out_moderate = np.fmax(rule2, rule9)
     out_high = np.fmax(np.fmax(rule3, rule6), rule8)
     out_veryHigh = np.fmax(rule4, rule5)
     
-    # Aggregate output
     aggregated = np.fmax(np.fmax(out_low, out_moderate), np.fmax(out_high, out_veryHigh))
     
-    # Defuzzification with centroid method
     risk_score = fuzz.defuzz(y_risk, aggregated, 'centroid')
     
     return risk_score, aggregated
 
 # Calculate risk for all patients
-print("\n\nCalculating heart disease risk for all patients...")
+print("\nCalculating heart disease risk for all patients...")
 risk_scores = []
 risk_categories = []
 
@@ -202,7 +205,6 @@ for idx, row in data.iterrows():
     
     risk_scores.append(risk_score)
     
-    # Risk categorization
     if risk_score < 30:
         category = "Low"
     elif risk_score < 50:
@@ -240,7 +242,8 @@ print(data.nlargest(10, 'risk_score')[['age', 'trestbps', 'chol', 'fbs', 'ldl', 
 print("\n\nTop 10 patients with lowest risk:")
 print(data.nsmallest(10, 'risk_score')[['age', 'trestbps', 'chol', 'fbs', 'ldl', 'hdl', 'risk_score', 'risk_category']])
 
-# Result analysis charts
+# Create and save risk analysis charts
+print("\nCreating risk analysis charts...")
 fig, axes = plt.subplots(2, 3, figsize=(18, 12))
 
 # 1. Risk scores histogram
@@ -291,6 +294,9 @@ axes[1, 2].set_ylabel('Risk Score')
 axes[1, 2].grid(True, alpha=0.3)
 
 plt.tight_layout()
+# Save the plot BEFORE showing it
+plt.savefig('plots/risk_analysis_charts.png', dpi=300, bbox_inches='tight')
+print("✓ Risk analysis charts saved as 'plots/risk_analysis_charts.png'")
 plt.show()
 
 # Correlation analysis
@@ -302,11 +308,11 @@ correlation_matrix = data[['age', 'trestbps', 'chol', 'fbs', 'ldl', 'hdl', 'risk
 print("\nCorrelation matrix:")
 print(correlation_matrix['risk_score'].sort_values(ascending=False))
 
-# Correlation matrix chart
+# Create and save correlation matrix chart
+print("\nCreating correlation matrix plot...")
 fig, ax = plt.subplots(figsize=(10, 8))
 im = ax.imshow(correlation_matrix, cmap='coolwarm', vmin=-1, vmax=1)
 
-# Add numbers to cells
 for i in range(len(correlation_matrix.columns)):
     for j in range(len(correlation_matrix.columns)):
         text = ax.text(j, i, f'{correlation_matrix.iloc[i, j]:.2f}',
@@ -319,6 +325,9 @@ ax.set_yticklabels(correlation_matrix.columns)
 ax.set_title('Correlation Matrix Between Variables')
 plt.colorbar(im)
 plt.tight_layout()
+# Save the plot BEFORE showing it
+plt.savefig('plots/correlation_matrix.png', dpi=300, bbox_inches='tight')
+print("✓ Correlation matrix plot saved as 'plots/correlation_matrix.png'")
 plt.show()
 
 # Display results for sample patients
@@ -342,7 +351,6 @@ print("\n\n" + "="*80)
 print("Overall Results Analysis:")
 print("="*80)
 
-# Overall analysis
 high_risk_count = len(data[data['risk_score'] > 60])
 high_risk_percentage = (high_risk_count / len(data)) * 100
 
@@ -356,3 +364,11 @@ print("\n\nGeneral Recommendations:")
 print("1. Patients with high risk (score > 60) should be referred for cardiac examination.")
 print("2. Patients with moderate risk (score 30-60) should be under regular monitoring.")
 print("3. Patients with low risk (score < 30) should continue a healthy lifestyle.")
+
+print("\n\n" + "="*80)
+print("Summary of Saved Plots:")
+print("="*80)
+print("1. membership_functions.png - Fuzzy membership functions")
+print("2. risk_analysis_charts.png - Risk analysis charts (6 subplots)")
+print("3. correlation_matrix.png - Correlation matrix")
+print(f"\nAll plots saved in 'plots' directory with high quality (300 DPI)")
