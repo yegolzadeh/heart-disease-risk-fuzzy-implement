@@ -236,15 +236,15 @@ Patients with risk scores above 60 showed distinct characteristics:
 ## 📈 Visual Results
 
 ### 1. Fuzzy Logic Membership Functions
-![Membership Functions](images/membership_functions.png)
+![Membership Functions](membership_functions.png)
 *Shows how age, blood pressure, and cholesterol values are categorized using fuzzy logic*
 
 ### 2. Risk Analysis Dashboard  
-![Risk Analysis Dashboard](images/risk_analysis_charts.png)
+![Risk Analysis Dashboard](risk_analysis_charts.png)
 *Displays risk score distribution and relationships between variables*
 
 ### 3. Correlation Matrix
-![Correlation Matrix](images/correlation_matrix.png)
+![Correlation Matrix](correlation_matrix.png)
 *Shows correlations between different medical parameters and risk scores*
 
 ## 🧪 Sample Patient Assessments
